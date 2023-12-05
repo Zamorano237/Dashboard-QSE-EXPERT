@@ -15,7 +15,7 @@ const Charts = () => {
 
   return (
     <CRow>
-      <CCol xs={6}>
+      <CCol xs={12} md={6}>
         <CCard className="mb-4">
           <CCardHeader>Evolution des accidents</CCardHeader>
           <CCardBody>
@@ -35,7 +35,7 @@ const Charts = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol xs={6}>
+      <CCol xs={12} md={6}>
         <CCard className="mb-4">
           <CCardHeader>Comparaison AAA Vs ASA</CCardHeader>
           <CCardBody>
@@ -65,7 +65,7 @@ const Charts = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol xs={6}>
+      <CCol xs={12} md={6}>
         <CCard className="mb-4">
           <CCardHeader>Repartition des accidents / Incidents</CCardHeader>
           <CCardBody>
@@ -83,7 +83,7 @@ const Charts = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol xs={6}>
+      <CCol xs={12} md={6}>
         <CCard className="mb-4">
           <CCardHeader>Suivi des action</CCardHeader>
           <CCardBody>
@@ -102,7 +102,7 @@ const Charts = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol xs={6}>
+      <CCol xs={12} md={6}>
         <CCard className="mb-4">
           <CCardHeader>Repartition des accidents par Service</CCardHeader>
           <CCardBody>
@@ -120,7 +120,7 @@ const Charts = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol xs={6}>
+      <CCol xs={12} md={6}>
         <CCard className="mb-4">
           <CCardHeader>Suivi des actions par auteur</CCardHeader>
           <CCardBody>
