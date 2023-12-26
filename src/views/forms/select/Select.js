@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
 import { Formik, Form, Field, FieldArray } from 'formik';
-import { TextField, Button, Checkbox, FormControlLabel, Typography, MenuItem, Grid } from '@mui/material';
+import { TextField, Button, Checkbox, FormControlLabel, Typography, MenuItem, Grid,IconButton } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
@@ -11,6 +11,7 @@ import SendIcon from '@mui/icons-material/Send';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Stepper, Step, StepLabel } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 // ...autres imports...
 
@@ -26,13 +27,20 @@ const initialValues = {
   equipmentInvolved: '',
   victims: [{ name: '', position: '', injuryType: '' }],
   witnesses: [{ name: '', testimony: '' }],
-  actions: [{ title: '', description: '', responsible: '', startDate: '', endDate: '', status: '' }]
+  actions: [{ title: '', description: '', responsible: '', startDate: '', endDate: '', status: '' }],
+  accidentCauses: [''],
 };
 
 const MyForm = () => {
   const [open, setOpen] = useState(false); // État pour la popup
   const [page, setPage] = useState(0);
-
+  const accidentCausesOptions = [
+    'Erreur humaine',
+    'Défaillance technique',
+    'Condition météorologique',
+    'Non respect des procédures',
+    // ... autres causes
+  ];
   const nextPage = () => setPage(page + 1);
   const previousPage = () => setPage(page - 1);
 
@@ -45,7 +53,7 @@ const MyForm = () => {
     setOpen(false); // Ferme la popup
   };
 
-  const steps = ['Informations sur l\'accident', 'Informations sur les victimes', 'Recueil des faits', 'Actions mises en place'];
+  const steps = ['Informations sur l\'accident', 'Informations sur les victimes', 'Recueil des faits', 'Analyse des causes','Actions mises en place'];
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -175,6 +183,7 @@ const MyForm = () => {
           fullWidth
         />
       </Grid>
+      
       {/* Arrêt dû à l'événement */}
       <Grid item xs={12} md={6}>
         <FormControlLabel
@@ -227,7 +236,7 @@ const MyForm = () => {
           {values.victims.map((victim, index) => (
             <React.Fragment key={index}>
               {/* Nom de la victime */}
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={3}>
                 <Field
                   as={TextField}
                   label="Nom de la victime"
@@ -261,10 +270,24 @@ const MyForm = () => {
                 </Field>
               </Grid>
 
+              {/* Siége de la lésion */}
+              <Grid item xs={12} sm={2}>
+                <Field
+                  as={TextField}
+                  label="siége de la bléssure"
+                  name={`victims[${index}].injuryType`}
+                  select
+                  fullWidth
+                >
+                  <MenuItem value="Tête">Tête</MenuItem>
+                  <MenuItem value="Cou">Cou</MenuItem>
+                  <MenuItem value="Pied">Pied</MenuItem>
+                </Field>
+              </Grid>
+
               {/* Bouton pour supprimer une victime */}
               <Grid item xs={12} sm={1}>
-                <Button variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => remove(index)}>
-                  Supprimer
+                <Button color="error" startIcon={<DeleteIcon />} onClick={() => remove(index)}>
                 </Button>
               </Grid>
             </React.Fragment>
@@ -310,7 +333,7 @@ const MyForm = () => {
               </Grid>
 
               {/* Témoignage */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <Field
                   as={TextField}
                   label="Témoignage"
@@ -348,8 +371,55 @@ const MyForm = () => {
   </Grid> 
 )}
 
-
-{page === 3 && (
+{page === 3 && (  
+          <Grid container style={{ backgroundColor: 'white', padding: '20px' }}>   
+          <Typography variant="h6" style={{ margin: '20px 0' }}>Causes de l'accident</Typography>
+          <FieldArray
+            name="accidentCauses"
+            render={({ push, remove }) => (
+              <Grid container spacing={2}> {/* Ajout de l'espacement ici */}
+                {values.accidentCauses.map((cause, index) => (
+                  <React.Fragment key={index}>
+                    {/* Ajustez la taille de l'item Grid pour avoir deux champs par ligne */}
+                    <Grid item xs={12} sm={6}> 
+                      <Field
+                        component={TextField}
+                        name={`accidentCauses[${index}]`}
+                        select
+                        label="Sélectionnez une cause"
+                        fullWidth
+                      >
+                        {accidentCausesOptions.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Field>
+                    </Grid>
+                    {/* Bouton de suppression à côté de chaque champ */}
+                    <Grid item xs={12} sm={6} style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+                      <IconButton color="error" onClick={() => remove(index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  </React.Fragment>
+                ))}
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={() => push('')}
+                  >
+                    Ajouter une cause
+                  </Button>
+                </Grid>
+              </Grid>
+            )}
+          />
+        </Grid>
+      )}
+{page === 4 && (
   <Grid container style={{ backgroundColor: 'white', padding: '15px' }}>
   <React.Fragment>
     <Typography variant="h6" style={{ margin: '10px 0' }}>Actions mises en place</Typography>
@@ -469,7 +539,7 @@ const MyForm = () => {
               </Grid>
             )}
 
-            {page < 3 && (
+            {page < 4 && (
               <Grid item>
                 <Button variant="contained" color="success" onClick={nextPage} endIcon={<ArrowForwardIcon  />} >
                   Suivant
@@ -477,7 +547,7 @@ const MyForm = () => {
               </Grid>
             )}
 
-            {page === 3 && (
+            {page === 4 && (
               <Grid item>
                 
                 <Button type="submit" variant="contained" endIcon={<SendIcon />} color="success">
